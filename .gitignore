@@ -1,0 +1,7 @@
+*~
+
+# KDE directory preferences
+.directory
+*.json
+*.geojson
+*.csv
