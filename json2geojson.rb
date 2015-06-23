@@ -9,9 +9,12 @@ def options
    
    OptionParser.new do |parser|
       parser.on('-c VALUE', '--code VALUE', '座標系番号'){|v| args[:c] = v}
-      parser.on('-i VALUE', '--input VALUE', 'JSONファイル(必須'){|v| args[:i] =v}
+      parser.on('-i VALUE', '--input VALUE', 'JSONファイル(必須)'){|v| args[:i] =v}
+      parser.on('-x VALUE', '--X VALUE', 'X座標のカラム名'){|v| args[:x] =v}
+      parser.on('-y VALUE', '--Y VALUE', 'Y座標のカラム名'){|v| args[:y] =v}
       parser.parse!(ARGV)
    end
+   
    args
 end
 
@@ -41,16 +44,26 @@ unless epsg_code
    exit 1
 end
 
-#南北方向のカラムを指定
-#未実装
-
-#東西方向のカラムを指定
-#未実装
-
 #指定されたJSONファイルの読み込み
 json_data = open(json_file_path) do |io|
    JSON.load(io)
 end
+
+#南北方向のカラムを指定
+#未実装
+i = 0
+unless args[:x]
+   json_data['fields'].each do |fields|
+      puts i.to_s +  ' : ' + fields
+      i += 1
+   end
+   print 'X座標の格納されているカラム名の番号を入力してください: '
+   str = gets
+   args[:x] = json_data['fields'][str.to_i]
+end
+
+#東西方向のカラムを指定
+#未実装
 
 #GeoJSONの雛形を作成
 geojson_data = {
@@ -71,7 +84,7 @@ json_data['data'].each do |data|
       'properties' => data,
       'geometry' => {
          'type' => 'Point',
-         'coordinates' => [data['Ycoordinates'].to_f, data['Xcoordinates'].to_f]
+         'coordinates' => [data['Ycoordinates'].to_f, data[args[:x]].to_f]
          }
    }
 end
