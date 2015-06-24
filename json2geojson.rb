@@ -62,7 +62,16 @@ until args[:x] do
 end
 
 #東西方向のカラムを指定
-#未実装
+until args[:y] do
+   i = 0
+   json_data['fields'].each do |fields|
+      puts i.to_s + ' : ' + fields
+      i += 1
+   end
+   print 'Y座標の格納されているカラム名の番号を入力してください: '
+   str = gets
+   args[:y] = json_data['fields'][str.to_i]
+end
 
 #GeoJSONの雛形を作成
 geojson_data = {
@@ -83,7 +92,7 @@ json_data['data'].each do |data|
       'properties' => data,
       'geometry' => {
          'type' => 'Point',
-         'coordinates' => [data['Ycoordinates'].to_f, data[args[:x]].to_f]
+         'coordinates' => [data[args[:y]].to_f, data[args[:x]].to_f]
          }
    }
 end
@@ -94,5 +103,7 @@ geojson_file_path = json_file_path.gsub('.json','.geojson')
 open(geojson_file_path, 'w') do |io|
    JSON.dump(geojson_data, io)
 end
+
+puts 'done.'
 
 exit 0
