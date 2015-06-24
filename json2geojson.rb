@@ -50,11 +50,10 @@ json_data = open(json_file_path) do |io|
 end
 
 #南北方向のカラムを指定
-#未実装
-i = 0
-unless args[:x]
+until args[:x] do
+   i = 0
    json_data['fields'].each do |fields|
-      puts i.to_s +  ' : ' + fields
+      puts i.to_s + ' : ' + fields
       i += 1
    end
    print 'X座標の格納されているカラム名の番号を入力してください: '
